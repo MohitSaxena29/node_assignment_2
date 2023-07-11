@@ -5,23 +5,23 @@ import { Link,useNavigate } from "react-router-dom";
 import {notification} from 'antd';
 import Navbar from "../NavBar/Navbar";
 const View = () => {
-  const [users, setUsers] = useState([]);
+  const [userData, setuserData] = useState([]);
   const navigate=useNavigate();
   useEffect(() => {
     axios
-      .get("http://localhost:5200/record/user")
+      .get("http://localhost:5200/view/user")
       .then((response) => {
-        setUsers(response.data);
+        setuserData(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  const handleDelete = async (userId) => {
+  const manageDelete = async (userId) => {
     try {
-      await axios.delete(`http://localhost:5200/record/user/${userId}`);
-      setUsers(users.filter((user) => user._id !== userId));
+      await axios.delete(`http://localhost:5200/view/user/${userId}`);
+      setuserData(userData.filter((user) => user._id !== userId));
       notification.success({
         message: "User Deleted",
         description: "Deletion Successfull",
@@ -38,9 +38,9 @@ const View = () => {
   return (
     <>
       <Navbar/>
-      {users.length > 0 ? (
+      {userData.length > 0 ? (
         <div className="grid-container">
-          {users.map((item) => (
+          {userData.map((item) => (
             <div className="grid-item" key={item._id}>
               <div className="row">
                 <div className="col-sm-3 col-md-3 col-lg-3">
@@ -49,7 +49,7 @@ const View = () => {
                 <div className="col-sm col-md col-lg">
                   <span className="displaydata">
                     <img
-                      src={`http://localhost:5200/record/getfile/${item.profileImage}`}
+                      src={`http://localhost:5200/view/getfile/${item.profileImage}`}
                       alt="User Image"
                     />
                   </span>
@@ -111,7 +111,7 @@ const View = () => {
                 </Link>
                 <button
                   className="delete-button"
-                  onClick={() => handleDelete(item._id)}
+                  onClick={() => manageDelete(item._id)}
                 >
                   Delete
                 </button>

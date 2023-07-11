@@ -7,7 +7,7 @@ import Navbar from "../NavBar/Navbar";
 
 const User = () => {
   const { id } = useParams();
-  const [profileImage, setProfileImage] = useState(null);
+  const [userImage, setuserImage] = useState(null);
   const [Technology, setTechnology] = useState([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -20,7 +20,7 @@ const User = () => {
     if (!id) {
       return;
     }
-    axios.get("http://localhost:5200/record/user/" + id).then((response) => {
+    axios.get("http://localhost:5200/view/user/" + id).then((response) => {
       const { data } = response;
       setName(data.name);
       setGender(data.gender);
@@ -31,17 +31,17 @@ const User = () => {
   }, [id]);
 
 
-  const handleFileChange = (event) => {
+  const fileChange = (event) => {
     const files = event.target.files[0];
-    setProfileImage(files);
+    setuserImage(files);
   };
 
   const changeCategory = (event) => {
     setCategory(event.target.value);
   };
 
-  const handleTechnologyChange = (e) => {
-    const { checked, value } = e.target;
+  const TechnologyChecked = (event) => {
+    const { checked, value } = event.target;
     if (checked) {
       setTechnology((prevTechnology) => [...prevTechnology, value]);
     } else {
@@ -50,40 +50,6 @@ const User = () => {
       );
     }
   };
-
-  const submitForm = async (e) => {
-    e.preventDefault();
-
-    try {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("gender", gender);
-      formData.append("email", email);
-      formData.append("mobile", mobile);
-      formData.append("category", category);
-      formData.append("Technology", JSON.stringify(Technology));
-      if (profileImage) {
-        formData.append("profileImage", profileImage);
-      }
-      if (id) {
-        await axios.put("http://localhost:5200/record/" + id, formData);
-      } else {
-        await axios.post("http://localhost:5200/record/newuser", formData);
-        notification.success({
-          message: "User Created",
-          description: "Creation Successfull",
-        });
-      }
-      navigate("/view");
-    } catch (error) {
-      console.log(error);
-      notification.error({
-        message: "Failed",
-        description: "Creation Failed",
-      });
-    }
-  };
-
 
   const handlePreview = (e) => {
     e.preventDefault();
@@ -145,6 +111,39 @@ const User = () => {
       return;
     }
     setShowModal(true);
+  };
+
+  const submitForm = async (e) => {
+    e.preventDefault();
+
+    try {
+      const data = new FormData();
+      data.append("name", name);
+      data.append("gender", gender);
+      data.append("email", email);
+      data.append("mobile", mobile);
+      data.append("category", category);
+      data.append("Technology", JSON.stringify(Technology));
+      if (userImage) {
+        data.append("profileImage", userImage);
+      }
+      if (id) {
+        await axios.put("http://localhost:5200/view/" + id, data);
+      } else {
+        await axios.post("http://localhost:5200/view/newuser", data);
+        notification.success({
+          message: "User Created",
+          description: "Creation Successfull",
+        });
+      }
+      navigate("/view");
+    } catch (error) {
+      console.log(error);
+      notification.error({
+        message: "Failed",
+        description: "Creation Failed",
+      });
+    }
   };
 
   const closeModal = () => {
@@ -250,7 +249,7 @@ const User = () => {
                 value="C"
                 id="C"
                 checked={Technology.includes("C")}
-                onChange={handleTechnologyChange}
+                onChange={TechnologyChecked}
               />
               <label className="form-check-label">C</label>
             </div>
@@ -261,7 +260,7 @@ const User = () => {
                 value="C++"
                 id="C++"
                 checked={Technology.includes("C++")}
-                onChange={handleTechnologyChange}
+                onChange={TechnologyChecked}
               />
               <label className="form-check-label">C++</label>
             </div>
@@ -272,7 +271,7 @@ const User = () => {
                 value="Java"
                 id="Java"
                 checked={Technology.includes("Java")}
-                onChange={handleTechnologyChange}
+                onChange={TechnologyChecked}
               />
               <label className="form-check-label">Java</label>
             </div>
@@ -283,7 +282,7 @@ const User = () => {
                 value="JavaScript"
                 id="JavaScript"
                 checked={Technology.includes("JavaScript")}
-                onChange={handleTechnologyChange}
+                onChange={TechnologyChecked}
               />
               <label className="form-check-label">JavaScript</label>
             </div>
@@ -297,14 +296,14 @@ const User = () => {
               name="profile_photo"
               placeholder="Photo"
               accept="image/jpeg, image/png"
-              onChange={handleFileChange}
+              onChange={fileChange}
             />
           </div>
 
           <div>
-            {profileImage && (
+            {userImage && (
               <img
-                src={URL.createObjectURL(profileImage)}
+                src={URL.createObjectURL(userImage)}
                 alt="Profile"
                 className="profile-image"
               />
@@ -349,7 +348,7 @@ const User = () => {
               <p>
                 <strong>Profile Picture:</strong> <br />{" "}
                 <img
-                  src={profileImage ? URL.createObjectURL(profileImage) : ""}
+                  src={userImage ? URL.createObjectURL(userImage) : ""}
                   alt="Profile"
                   className="profile-image"
                 />

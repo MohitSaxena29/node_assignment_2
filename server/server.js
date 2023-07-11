@@ -26,7 +26,7 @@ app.use(
   );
 const UserRoutes = require('./Routes/UserRoute');
 mongoose.connect('mongodb+srv://mohitsaxenacsccv20:iJ15v1iNWBwoe3yQ@cluster0.dflisft.mongodb.net/?retryWrites=true&w=majority');
-app.use('/record', UserRoutes)
+app.use('/view', UserRoutes)
 app.listen(port,()=>{
   console.log(`server connected at ${port} port`);
 });
